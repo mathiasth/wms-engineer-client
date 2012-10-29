@@ -5,7 +5,7 @@
 
   Must implement a function sendIntegrationMessage(appointment, callback):
   
-  IN: appointment - The body of a HTTP(s) post request
+  IN: appointment - appointment after update
   OUT: Callback(error, http(s) post result)
 
   appointment = {
@@ -14,8 +14,7 @@
     "propertyN": "valueN"
   }
 
-  This example module covers the functionality send SXP messages to the "Service 
-  Optimization Server" as part of the ClickSoftware product suite (http://www.clicksoftware.com).
+  This example module is here to define the place from which an outgoing message to a WFM-system should be sent. The message will update the appointment in the external system. appointment needs to be converted to some kind of structure the external system can work with.
 
 */
 

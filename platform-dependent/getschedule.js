@@ -27,8 +27,7 @@
 
   Positive callback (i.e. without error) must be called in case of an empty schedule.
 
-  This example module covers the steps to receive a schedule from the "Service Optimization Server" as
-  part of the ClickSoftware product suite (http://www.clicksoftware.com).
+  This example module contains a simple schedule database for demonstration purposes only. Write some code that queries the WFM-system for the current schedule of an engineer and pass it back to the application.
 */
 
 var config = require('../_config.js'),

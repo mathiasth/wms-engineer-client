@@ -9,8 +9,7 @@
   IN: l - reference to a custom winston logger
   OUT: Callback(error, boolean status of authentication)
 
-  This example module covers the functionality to authenticate a user against an active directory service
-  of Microsoft Windows Server 2008 using the LDAP protocol.
+  This example module covers contains a simple user db for demonstration purposes only.
 
 */
 
