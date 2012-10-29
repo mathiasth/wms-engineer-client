@@ -1,0 +1,47 @@
+extends layout
+
+block head
+  script(type='text/javascript', src='/socket.io/socket.io.js')
+  script(type='text/javascript', src='/js/sprintf-0.7-beta1.js')
+  script(type='text/javascript', src='/js/moment.min.pretty.js')
+  script(type='text/javascript', src='/js/jquery.validate.min.js')
+
+  script(type='text/javascript')
+    $(document).ready(function() {
+      // to pass variables from the backend to the web client: get the local from the app and assign it to a variable. rendering issue.
+      var config = {};
+      config.statusProperty = '!{statusProperty}';
+      config.taskIdentifier = '!{taskIdentifier}';
+      config.assignmentStart = '!{assignmentStart}';
+      config.assignmentFinish = '!{assignmentFinish}';
+
+      $('#loadingProgress').css('visibility', 'hidden');
+      $('#loadingProgressModal').css('visibility', 'hidden');
+
+      PresentSchedule(config);
+      $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+    });
+
+block content
+  div.span12
+    h3 Your current schedule:
+    #fixedMessage
+    #messages
+    table(id='scheduleTable', class='table table-hover table-bordered table-condensed')
+      tr
+        thead(id='scheduleTableHead')
+          th #
+          each scheduleProperty in scheduleProperties
+            th= scheduleProperty
+          th View
+        tbody(id='scheduleTableAppointments')
+    #playground
+  #transitionModal(class='modal hide', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+    #modal-header.modal-header
+      button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+      h3 Loading appointment... seems to fail if you can see this message
+    #modal-body.modal-body
+      img(id='loadingProgressModal', src='images/ajax-loader-modal-footer.gif')
+    #modal-footer.modal-footer
+      a(href='#', class='btn', id='modalButtonClose') Close
+      a(href='#', class='btn btn-primary', id='modalButtonSave') Save changes

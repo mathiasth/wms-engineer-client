@@ -1,0 +1,23 @@
+{
+  "name": "wms-engineer-client",
+  "description": "Simple web client for engineers to integrate with workforce management systems in enterprises",
+  "author": "Mathias Thürling <mathias.thuerling@gmail.com>",
+  "dependencies": {
+    "connect": "2.4.x",
+    "connect-flash": "0.1.x",
+    "connect-mongodb": "1.1.x",
+    "cookie": "0.0.4",
+    "cron": "1.0.x",
+    "express": "3.0.x",
+    "jade": "0.27.x",
+    "ldapauth": "2.1.x",
+    "libxmljs": "0.5.x",
+    "moment": "1.7.x",
+    "mongodb": "1.1.x",
+    "monk": "0.2.x",
+    "socket.io": "0.9.x",
+    "sprintf": "0.1.x",
+    "winston": "0.6.2"
+  },
+  "engine": "node 0.8.x"
+}

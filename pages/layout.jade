@@ -1,0 +1,31 @@
+!!! 5
+html
+  head
+    link(rel='stylesheet', href='/style/bootstrap.css')
+    link(rel='stylesheet', href='/style/styles.css')
+    title Dispatch
+    script(type='text/javascript', src='/js/jquery-1.8.1.js')
+    script(type='text/javascript', src='/js/clientfunctions.js')
+    script(type='text/javascript', src='/js/webclient.js')
+    script(type='text/javascript', src='/js/bootstrap.js')
+    block head
+  body
+    div(class='navbar navbar-static-top navbar-inverse')
+      div.navbar-inner
+        a.brand Engineer web client
+        ul.nav
+          if (typeof user === 'undefined')
+            li
+              a(href='/login') Please log in to use the application.
+          else
+            li
+              #session.navbar-text User: 
+                = user
+                |  (
+                = id
+                ). 
+            li
+              a(href='/logout') Logout
+        a.brand
+          img(id='loadingProgress', src='images/ajax-loader.gif')
+    block content

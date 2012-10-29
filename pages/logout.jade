@@ -1,0 +1,14 @@
+extends layout
+
+block head
+  script(type='text/javascript')
+    $(document).ready(function() {
+      $('#loadingProgress').css('visibility', 'hidden');
+    });
+
+block content
+  div.span12
+    h3 Logout complete.
+    p You may now close your browser window or 
+      a(href='/login') return
+      |  to the login page.

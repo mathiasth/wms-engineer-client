@@ -1,0 +1,35 @@
+extends layout
+
+block head
+  script(type='text/javascript')
+    $(document).ready(function() {
+      $('#loadingProgress').css('visibility', 'hidden');
+      $('#loginForm').submit(function() {
+        $('#loadingProgress').css({ 'visibility':'visible' });
+        return true;
+      });
+      var flashMessage = '!{message}';
+      if (flashMessage) {
+        $('#messages').html(ShowFlashMessage('error', flashMessage, false));
+      }
+    });
+
+block content
+  div.span12
+    h3 Welcome!
+    #messages
+    form.form-horizontal(method='POST', action=postTarget, id='loginForm')
+      legend Please enter your credentials:
+      div.control-group
+        label(class='control-label', for='username') Username:
+        div.controls
+          input(type='text', name='username', id='username', placeholder='Username', autocorrect='off', autocapitalize='off')
+      div.control-group
+        label(class='control-label', for='password') Password:
+        div.controls
+          input(type='password', name='password', id='password', placeholder='Password')
+      div.control-group
+        div.form-actions
+          button(type='reset', class='btn btn-warning') Reset form
+          = ' '
+          button(type='submit', class='btn btn-primary') Login 
