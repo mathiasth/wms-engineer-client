@@ -18,8 +18,8 @@ config.dispatch.httpPass = '8765.de';
 config.dispatch.localInterfacePort = 8001;
 config.dispatch.useSecureLocalInterface = false;
 config.dispatch.sslOptions = {
-  //key: fs.readFileSync('server-key.pem'),
-  //cert: fs.readFileSync('server-cert.pem'),
+  //key: fs.readFileSync('cert-key.pem'),
+  //cert: fs.readFileSync('cert-cert.pem'),
   requestCert: false,
   rejectUnauthorized: false,
   passphrase: "passwort"
@@ -40,8 +40,8 @@ config.app.host = '192.168.0.1';
 config.app.useSecureConnection = false;
 config.app.localProtocolHandler = (config.app.useSecureConnection) ? 'https' : 'http';
 config.app.sslOptions = {
-  //key: fs.readFileSync('server-key.pem'),
-  //cert: fs.readFileSync('server-cert.pem'),
+  //key: fs.readFileSync('cert-key.pem'),
+  //cert: fs.readFileSync('cert-cert.pem'),
   requestCert: false,
   rejectUnauthorized: false,
   passphrase: "passwort"
@@ -50,11 +50,11 @@ config.app.sessionSecret = 'j4Tov2d3YDp92J2DdCiZMaLSOJRq';
 config.app.DbHost = '127.0.0.1';
 config.app.DbPort = 27017;
 config.app.DbName = 'test';
-config.app.logLevel = 'info'; // one of ['all','debug','info','warn','error']
+config.app.logLevel = 'info' // one of ['all','debug','info','warn','error']
 
 
 // fake a date: set to false if no fake, else 'yyyy-mm-ddT00:00:00', e.g. '2011-01-03'
-config.logic.fakedate = '2011-01-03T00:00:00';
+config.logic.fakedate = '2012-09-01T00:00:00';
 
 // Dripfeed: define the companies way of completing tasks.
 // true: enabled. Only allow the engineer to work on the next task in line.
@@ -67,47 +67,40 @@ config.logic.dripfeed = true;
    isComplete: set true for any status which is an end-state for a task, i.e. for
      which the engineer is required to supply start and finish time (time sheets)
 */
+
 config.logic.stateDiagram = {
   0: {
     name: 'Dispatched',
     allowedTransitions: {
-      0: 'Accepted',
-      1: 'Rejected',
-      2: 'Started'
+      0: 'Working',
+      1: 'Declined'
     },
     isComplete: false
   },
   1: {
-    name: 'Rejected',
+    name: 'Declined',
     allowedTransitions: {},
     isComplete: false
   },
   2: {
-    name: 'Accepted',
+    name: 'Working',
     allowedTransitions: {
-      0: 'Started'
+      0: 'Done',
+      1: 'Partially done'
     },
     isComplete: false
   },
   3: {
-    name: 'Started',
-    allowedTransitions: {
-      0: 'Completed',
-      1: 'Incomplete'
-    },
-    isComplete: false
-  },
-  4: {
-    name: 'Completed',
+    name: 'Done',
     allowedTransitions: {},
     isComplete: true
   },
-  5: {
-    name: 'Incomplete',
+  4: {
+    name: 'Partially done',
     allowedTransitions: {},
     isComplete: true
   }
-};
+}
 
 /* Define the object properties to be requested from the dispatching solution.
    Date masks for type 'duration' to be taken from http://momentjs.com/docs/#/parsing/string-format/
@@ -117,7 +110,7 @@ config.logic.stateDiagram = {
 config.logic.objectProperties = {
   'Start': {
     propertyName: 'Start',
-    belongsToObject: 'Assignment',
+    belongsToObject: 'Task',
     displayName: 'Begin',
     readOnly: true,
     propertyType: {
@@ -130,7 +123,7 @@ config.logic.objectProperties = {
   },
   'Finish': {
     propertyName: 'Finish',
-    belongsToObject: 'Assignment',
+    belongsToObject: 'Task',
     displayName: 'End',
     readOnly: true,
     propertyType: {
@@ -141,25 +134,15 @@ config.logic.objectProperties = {
     },
     displayInSchedule: true
   },
-  'CallID': {
-    propertyName: 'CallID',
+  'ID': {
+    propertyName: 'ID',
     belongsToObject: 'Task',
-    displayName: 'TaskID',
+    displayName: 'ApptID',
     readOnly: true,
     propertyType: {
       type: 'string'
     },
     displayInSchedule: true
-  },
-  'Number': {
-    propertyName: 'Number',
-    belongsToObject: 'Task',
-    displayName: 'Number',
-    readOnly: true,
-    propertyType: {
-      type: 'number'
-    },
-    displayInSchedule: false
   },
   'Status': {
     propertyName: 'Status',
@@ -169,30 +152,6 @@ config.logic.objectProperties = {
     propertyType: {
       type: 'string',
       xPathExtension: 'Name'
-    },
-    displayInSchedule: true
-  },
-  'EngineerType': {
-    propertyName: 'EngineerType',
-    belongsToObject: 'Task',
-    displayName: 'Dingsbums',
-    readOnly: true,
-    propertyType: {
-      type: 'string',
-      xPathExtension: 'Name'
-    },
-    displayInSchedule: false
-  },
-  'Duration': {
-    propertyName: 'Duration',
-    belongsToObject: 'Task',
-    displayName: 'Duration',
-    readOnly: true,
-    propertyType: {
-      type: 'duration',
-      toFormat: 'HH:mm:ss',
-      validateRegexp: '^\\d\\d:[0-5][0-9]:[0-5][0-9]$',
-      sourceFormat: 'seconds'
     },
     displayInSchedule: true
   },
@@ -206,16 +165,6 @@ config.logic.objectProperties = {
       xPathExtension: 'Name'
     },
     displayInSchedule: true
-  },
-  'Emergency': {
-    propertyName: 'Emergency',
-    belongsToObject: 'Task',
-    displayName: 'Emergency',
-    readOnly: false,
-    propertyType: {
-      type: 'boolean'
-    },
-    displayInSchedule: false
   },
   'Customer': {
     propertyName: 'Customer',
@@ -237,16 +186,6 @@ config.logic.objectProperties = {
       maxlength: 64
     },
     displayInSchedule: false
-  },
-  'ExtraAttention': {
-    propertyName: 'ExtraAttention',
-    belongsToObject: 'Task',
-    displayName: 'Extra Info',
-    readOnly: true,
-    propertyType: {
-      type: 'string'
-    },
-    displayInSchedule: false
   }
 };
 
@@ -257,7 +196,7 @@ config.logic.assignmentStart = 'Start';
 // Define the property name that holds the assignments finish time. This is the name as it appears in the integration messages.
 config.logic.assignmentFinish = 'Finish';
 // Define the property that identifies a task. Must be unique in the dispatching solution.
-config.logic.taskIdentifier = 'CallID';
+config.logic.taskIdentifier = 'ID';
 
 
 // POST options object literal
