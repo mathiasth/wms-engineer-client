@@ -14,54 +14,28 @@
 
   This example module covers the functionality authorize a user against the Service Optimization Server as part of the ClickSoftware product suite (http://www.clicksoftware.com).
 */
-var config = require('../_config.js'),
-        fs = require('fs'),
-  libxmljs = require('libxmljs'),
-      func = require('../functions.js');
-
-var xmlDoc, result, lowerCaseLoginName;
-
-var engineer = {
-  xml: '',
-  loginName: '',
-  active: '',
-  engineerid: '',
+var config = require('../_config.js');
+var knownEngineers = {};
+knownEngineers = {
+  '10001': 'paul',
+  '10002': 'peter'
 };
 
+
 function checkUsername(loginName, l, callback) {
-  fs.readFile(__dirname+'/auth.getengineers.xml', function (error, xmldata) {
-    if (error) {
-      l.error('function cp.checkUsername: error reading message template from disk: ' + error);
-    } else {
-      // request a list of all registered engineers
-      func.post(config.dispatch.postopts, xmldata, function(error,postRes) {
-        if (error) {
-          l.error('function cp.checkUsername: error receiving list of engineers: ' + error);
-        } else {
-          //have response, convert, search for user & check for active = 1
-          lowerCaseLoginName = loginName.toLowerCase();
-          xmlDoc = libxmljs.parseXmlString(postRes);
-          // find login name in xml structure, get engineer element and then extract values
-          // libxmljs uses libxml2, which does not support xpath 2.0 queries, therefore translate()
-          // search could be done with 1 big query in the large document. better performance with more queries on a tiny document.
-          engineer.xml = xmlDoc.find("/SXPServerGetObjectsResult/Objects/Engineer[translate(LoginName, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='" + lowerCaseLoginName + "']");
-          if( engineer.xml != 0 ) {
-            engineer.xml = libxmljs.parseXmlString(engineer.xml);
-            engineer.loginName = engineer.xml.find("/Engineer/LoginName/text()");
-            engineer.active = engineer.xml.find("/Engineer/Active/text()");
-            engineer.engineerid = engineer.xml.find("/Engineer/ID/text()");
-            if( engineer.active == '1' ) {
-              callback(false, engineer.engineerid);
-            } else {
-              callback('Your account is marked inactive within the dispatching solution. Please consult your support team.', false);
-            }
-          } else {
-            callback('Invalid username or password, access is denied.', false);
-          }
-        }
-      });
+  var userMatch = false;
+  for (var i in knownEngineers) {
+    if (knownEngineers.hasOwnProperty(i)) {
+      userMatch = (loginName === knownEngineers[i]);
+      if (userMatch) {
+        callback(false, i);
+        break;
+      }
     }
-  });
+  }
+  if (!userMatch) {
+    callback('Engineer is not administered in dispatching solution.', false);
+  }
 };
 
 exports.checkUsername = checkUsername;

@@ -1,7 +1,7 @@
 wms-engineer-client
 ==================
 
-Simple web client for engineers to integrate with workforce management systems in enterprises
+Simple web client for engineers to integrate with workforce management systems in enterprises.
 
 Requires an installation of Node 0.8.x.
 
@@ -17,4 +17,4 @@ Requires an installation of Node 0.8.x.
  
     $ node app.js
 
-Engineer client will not work without a workforce management system (e.g. Service Optimization Server by ClickSoftware) being accessible in the location defined within the application's configuration.
+The code represents an application only for demonstration and having a starting point for integrating your own workforce managament system instance. It can be used standalone. The code in `platform-dependent` contains some sample data and needs adjustment for proper integration into a working system. Have a look into the `examples` folder for a working integration with the Service Optimization Server by Clicksoftware (http://www.clicksoftware.com), along with a working authentification against Active Directory.

@@ -21,81 +21,13 @@
 
 var config = require('../_config.js'),
         fs = require('fs'),
+  libxmljs = require('libxmljs'),
       func = require('../functions.js'),
    sprintf = require('sprintf').sprintf;
 
 function sendIntegrationMessage(appointment, callback) {
-  fs.readFile(__dirname+'/SXPMultipleOperations.xml', function (error, xmldata) {
-    if( error ) {
-      console.log('getschedule: ' + error);
-    } else {
-      // remove all read only fields, all but appt-start/finish, status && identifier && number
-      delete appointment['_assignedTo'];
-      var propertiesToKeep = [
-        config.logic.statusProperty,
-        config.logic.assignmentStart,
-        config.logic.assignmentFinish,
-        config.logic.taskIdentifier,
-        'Number'
-      ];
-      for (var propertyName in appointment) {
-        if (appointment.hasOwnProperty(propertyName)) {
-          var isAttributeToKeep = (propertiesToKeep.indexOf(propertyName) !== -1);
-          
-          var isReadOnlyAttribute = (config.logic.objectProperties[propertyName].readOnly);
-          if (!isAttributeToKeep && isReadOnlyAttribute) {
-            delete appointment[propertyName];
-          }
-        }
-      }
-      // convert data types to correct values
-      appointment = func.convertAppointmentDatatypes(appointment, 'integrationmessage');
-      // create needed xml structures
-      // first: Assignment
-      var assXML = '';
-      assXML += '<Assignment>\n';
-      for (var propertyName in appointment) {
-        if (appointment.hasOwnProperty(propertyName)) {
-          var isAssignmentAttribute = (config.logic.objectProperties[propertyName].belongsToObject === "Assignment");
-          if (isAssignmentAttribute) {
-            assXML += sprintf('<%s>%s</%s>\n', propertyName, appointment[propertyName], propertyName);
-          }
-        }
-      }
-      // need to add the appointment identifier manually...
-      assXML += '<Task>';
-      assXML += sprintf('<%s>%s</%s>\n', config.logic.taskIdentifier, appointment[config.logic.taskIdentifier], config.logic.taskIdentifier);
-      assXML += sprintf('<%s>%s</%s>\n', 'Number', appointment['Number'], 'Number');
-      assXML += '</Task>';
-      assXML += '</Assignment>';
-
-      // last: Task
-      var taskXML = '';
-      taskXML += '<Task>\n';
-      for (var propertyName in appointment) {
-        if (appointment.hasOwnProperty(propertyName)) {
-          var isAssignmentAttribute = (config.logic.objectProperties[propertyName].belongsToObject === "Task");
-          if (isAssignmentAttribute) {
-            taskXML += sprintf('<%s>%s</%s>\n', propertyName, appointment[propertyName], propertyName);
-          }
-        }
-      }
-      taskXML += '</Task>';      
-
-      // modify message template
-      xmldata = xmldata.toString();
-      if( xmldata.indexOf('%assignmentProperties%') != -1 ) xmldata = xmldata.replace('%assignmentProperties%', assXML);
-      if( xmldata.indexOf('%taskProperties%') != -1 ) xmldata = xmldata.replace('%taskProperties%', taskXML);
-      // post the prepared message to the dispatching solution
-      func.post(config.dispatch.postopts, xmldata, function(error, result) {
-        if( error ) {
-          callback('Unable to send an update message to the dispatching solution: ' + error, false);
-        } else {
-          callback(false, result);
-        }
-      });
-    }
-  });
+  console.log('Just imagine that an integration message has been sent, containing every detail or just parts of the following data, maybe also in a converted way: %s', JSON.stringify(appointment));
+  callback(false, 'Success');
 };
 
 exports.sendIntegrationMessage = sendIntegrationMessage;

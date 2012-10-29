@@ -1,9 +1,0 @@
-<SXPServerGetObjects Revision="7.5.0">
-  <ObjectType>Engineer</ObjectType>
-  <RequestedProperties>
-    <Item>Name</Item>
-    <Item>ID</Item>
-    <Item>LoginName</Item>
-    <Item>Active</Item>
-  </RequestedProperties>
-</SXPServerGetObjects>

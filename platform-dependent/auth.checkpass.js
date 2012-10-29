@@ -15,36 +15,39 @@
 */
 
 var config = require('../_config.js');
+var userDB = {};
 
-function checkPassword(username, password, l, callback) {
-  var LdapAuth = require('ldapauth');
-  var options = {
-    url: config.auth.protocol+'://'+config.auth.host+':'+config.auth.port,
-    adminDn: config.auth.adminDn,
-    adminPassword: config.auth.adminPass,
-    searchBase: config.auth.searchBase,
-    searchFilter: '('+config.auth.nameProp+'={{username}})'
-  };
-
-  if (password == '') {
-    callback('You need to supply a password for the authentication.', false);
-  } else {
-    var auth = new LdapAuth(options);
-    auth.authenticate(username, password, function(error, user) {
-  	  if (error) {
-	    l.error('function cp.checkPassword: ' + error);
-      // security: Return same error messages to user for various error scenarios. No details to attackers.
-	    var isErrorReturned = (error.toString().indexOf('InvalidCredentialsError') > -1 || error.toString().indexOf('no such user') > -1);
-      if (isErrorReturned) {
-	      callback('Invalid username or bad password, access is denied.', false);
-        } else {
-	      callback(error, false);
-        }
-      } else {
-        callback(false, true); 
-      }
-    });
+userDB = {
+  0: {
+    username: 'mathias',
+    password: 'test12'
+  },
+  1: {
+    username: 'peter',
+    password: 'peterspass'
   }
 };
+
+function checkPassword(username, password, l, callback) {
+  var foundUsername = false;
+  for (var i in userDB)  {
+    if (userDB.hasOwnProperty(i)) {
+      foundUsername = (userDB[i].username === username);
+      if (foundUsername) {
+        var passwordMatch = (userDB[i].password === password);
+        if (passwordMatch) {
+          callback(false, true);
+          break;
+        } else {
+          callback('Password mismatch.', false);
+          break;
+        }
+      }
+    }
+  }
+  if (!foundUsername) {
+    callback('User not found.', false);
+  }
+}
 
 exports.checkPassword = checkPassword;
