@@ -2,6 +2,7 @@
   "name": "wms-engineer-client",
   "description": "Simple web client for engineers to integrate with workforce management systems in enterprises",
   "author": "Mathias Thürling <mathias.thuerling@gmail.com>",
+  "version": "0.1.0",
   "dependencies": {
     "connect": "2.4.x",
     "connect-flash": "0.1.x",
