@@ -229,10 +229,6 @@ sio.set('authorization', function(data, callback) {
   if (data.headers.cookie) {
     data.cookie = cookie.parse(data.headers.cookie);
     data.sessionID = data.cookie['connect.sid'].split('.')[0].split(':')[1];
-    var query = {};
-    query = { 
-      '_id': data.sessionID 
-    };
     /* find the session document from the database and look, whether a 'user'
        key is present. in this case, the session's user has already been 
        authenticated to the application and his corresponding session will also 
