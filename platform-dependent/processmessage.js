@@ -47,6 +47,7 @@ function ProcessMessage(message, callback) {
     appointmentObject = ParseProperties(xmlDoc);
     if (appointmentObject !== false) {
       appointmentObject['action'] = 'create';
+      console.log(appointmentObject);
       callback(undefined,appointmentObject);
     } else {
       callback('Integration message without engineer ID, processing not possible.', false);
