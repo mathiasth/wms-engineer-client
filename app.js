@@ -367,20 +367,18 @@ new CronJob('00 00 * * * *', function() {
         mongoStore.destroy(document['_id'], function(error) {
           if (error) {
             l.error(sprintf('CRON: Session purge error, aborting: %s).', error));
+            return;
           } else {
-            if (documentNumber < (documents.length - 1)) {
-              DeleteSession(documentNumber + 1);
-            }
+            return;
           }
         });
-      }
-      if (documentNumber < (documents.length - 1)) {
-        DeleteSession(documentNumber + 1);
       }
     }
     l.info(sprintf('CRON: About to delete the old/inactive sessions out of %s total sessions within the database. ', documents.length));
     if (documents.length > 0) {
-      DeleteSession(0);
+      for (var i = 0; i < documents.length; i++) {
+        DeleteSession(i);  
+      }
     }
   });
 
