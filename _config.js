@@ -29,10 +29,10 @@ config.dispatch.sslOptions = {
 config.auth.host = '192.168.0.1';
 config.auth.port = 3389;
 config.auth.protocol = 'ldap';
-config.auth.adminDn = 'CN=Administrator,CN=Users,DC=clickone,DC=com';
-config.auth.adminPass = '1234.com';
+config.auth.adminDn = 'CN=Administrator,CN=Users,DC=yourDomain,DC=com';
+config.auth.adminPass = 'passwordOfAdmin';
 config.auth.nameProp = 'sAMAccountName';
-config.auth.searchBase = 'CN=Users,DC=clickone,DC=com';
+config.auth.searchBase = 'CN=Users,DC=yourDomain,DC=com';
 
 // general application configuration
 config.app.port = 8000;
